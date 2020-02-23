@@ -7,21 +7,26 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
-
+/**
+ * Main activity class, which most the user
+ * interaction takes place.
+ */
 class MainActivity : AppCompatActivity() {
 
-
-
+    /**
+     * Creates button, editText views, sets
+     * onClickListeners, eventListener.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var volumeButton = findViewById<Button>(R.id.volumeButton)
-        var linesButton = findViewById<Button>(R.id.linesButton)
-        var volumeEdit = findViewById<EditText>(R.id.volumeEdit)
-        var linesEdit = findViewById<EditText>(R.id.linesEdit)
-        var colorButton = findViewById<Button>(R.id.colorButton)
-        var colorEdit = findViewById<EditText>(R.id.colorEdit)
+        val volumeButton = findViewById<Button>(R.id.volumeButton)
+        val linesButton = findViewById<Button>(R.id.linesButton)
+        val volumeEdit = findViewById<EditText>(R.id.volumeEdit)
+        val linesEdit = findViewById<EditText>(R.id.linesEdit)
+        val colorButton = findViewById<Button>(R.id.colorButton)
+        val colorEdit = findViewById<EditText>(R.id.colorEdit)
 
         volumeButton.setOnClickListener{
             if(volumeEdit.text.toString().isNotEmpty()) {
@@ -50,25 +55,31 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
         volumeController.setEventListener(object: VolumeEventListener {
             override fun onEventOccured() {
                 updateValues(volumeEdit, linesEdit)
             }
-
             override fun onErrorEventOccured() {
                 showToast("Invalid entered color")
             }
         })
     }
 
+    /**
+     * Function that is called as an eventListener callback function,
+     * when refreshData method inside [VolumeController] is called.
+     *
+     * Refreshes [volumeEdit] and [linesEdit] editText views.
+     */
     fun updateValues(volumeEdit : EditText, linesEdit : EditText) {
         volumeEdit.setText(volumeController.getVolume())
         linesEdit.setText(volumeController.getLines().toString())
     }
 
+    /**
+     * Shows [Toast] based on passed [message] string.
+     */
     fun showToast(message : String) {
         Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
     }
-
 }

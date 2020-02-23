@@ -1,30 +1,34 @@
 package com.test.app
 
-import android.content.Context
 import android.view.MotionEvent
-import android.widget.Toast
 import kotlin.math.roundToInt
 
-
+/**
+ * TouchHandler class takes cares of handling touch
+ * events on [VolumeController.barsLayout] and triggering
+ * proper [VolumeController] methods.
+ */
 class TouchHandler(var volumeController: VolumeController) {
 
-    var startY = 0.0
+    private var startY = 0.0
 
-    fun handleTouch(context: Context, m: MotionEvent) : Boolean {
+    /**
+     * Handles touch events based on passed
+     * [m] MotionEvent instance.
+     */
+    fun handleTouch(m: MotionEvent) : Boolean {
         val pointerCount = m.pointerCount
         for (i in 0 until pointerCount) {
             val y = m.getY(i)
             when(m.action) {
                 MotionEvent.ACTION_UP -> {
-                    var diff = (y - startY)
+                    val diff = (y - startY)
                     startY = 0.0
                     calculateTouchDiff(diff)
-                    //Toast.makeText(context, "ACTION UP, Y difference Y: $diff", Toast.LENGTH_SHORT).show()
                 }
                 MotionEvent.ACTION_MOVE -> {
                     if(startY ==  0.0) {
                         startY = y.toDouble()
-                        //Toast.makeText(context, "ACTION MOVE, current Y: $y", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -32,6 +36,10 @@ class TouchHandler(var volumeController: VolumeController) {
         return true
     }
 
+    /**
+     * Calculates and sets [VolumeController.lines] based on
+     * passed [touchDiff] from the handleTouch method.
+     */
     private fun calculateTouchDiff(touchDiff : Double) {
         var currentDiff = touchDiff
         val direction = if (touchDiff < 0) "increase" else "decrease"
@@ -48,7 +56,4 @@ class TouchHandler(var volumeController: VolumeController) {
                 volumeController.getLines() -  addedLineCount else 0)
         }
     }
-
-
-
 }
